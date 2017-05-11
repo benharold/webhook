@@ -4,7 +4,8 @@
     "type": "project",
     "require": {
         "nikic/fast-route": "^1.2",
-        "monolog/monolog": "^1.22"
+        "monolog/monolog": "^1.22",
+        "twilio/sdk": "^5.8"
     },
     "license": "MIT",
     "authors": [
