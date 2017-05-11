@@ -1,0 +1,16 @@
+{
+    "name": "benharold/webhook",
+    "description": "Webhooks as a service",
+    "type": "project",
+    "require": {
+        "nikic/fast-route": "^1.2",
+        "monolog/monolog": "^1.22"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ben Harold",
+            "email": "benharold@mac.com"
+        }
+    ]
+}
