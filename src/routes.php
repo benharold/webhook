@@ -1,27 +1,18 @@
 <?php
 
-use benharold\webhook\client\ClientFactory;
-use benharold\webhook\sms\MessageFactory;
+use benharold\webhook\NewRelicMessageController;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r
-) {
-    $r->addRoute('GET', '/test', function () {
-        $sid = getenv('TWILIO_SID');
-        $token = getenv('TWILIO_TOKEN');
-        $from = getenv('FROM_NUMBER');
-        $to = getenv('TO_NUMBER');
-        $client = ClientFactory::create($sid, $token);
-        $message = MessageFactory::create($client, $to, $from, '');
-        $message->send();
-    });
-
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     $r->addRoute('POST', '/test', function () {
         $log = new Logger('webhook');
         $log->pushHandler(new StreamHandler(getenv('LOG_FILE_PATH'), Logger::NOTICE));
         $log->notice('Data posted to `/test`:', $_POST);
-        echo 'done';
+
+        $data = json_decode($_POST);
+        $c = new NewRelicMessageController($data);
+        $c->run();
     });
 
     $r->addRoute('POST', '/sms/{uuid}', function (array $uuid) {
