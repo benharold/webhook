@@ -8,4 +8,7 @@ if (version_compare('7.1.0', PHP_VERSION, '>')) {
 
 require '../../vendor/autoload.php';
 
+$dotenv = new Dotenv\Dotenv(__DIR__ . '/../../');
+$dotenv->load();
+
 require '../routes.php';
