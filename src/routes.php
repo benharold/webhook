@@ -1,11 +1,28 @@
 <?php
-$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
+
+use benharold\webhook\client\ClientFactory;
+use benharold\webhook\sms\MessageFactory;
+
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r
+) {
     $r->addRoute('GET', '/', function () {
         echo 123;
     });
-    $r->addRoute('GET', '/test', 'test_handler');
-    $r->addRoute('GET', '/best', function () {
-        echo '000';
+    $r->addRoute('GET', '/test', function () {
+        $sid = getenv('TWILIO_SID');
+        $token = getenv('TWILIO_TOKEN');
+        $from = getenv('FROM_NUMBER');
+        $to = getenv('TO_NUMBER');
+        $client = ClientFactory::create($sid, $token);
+        $message = MessageFactory::create($client, $to, $from, '');
+        echo '<code><pre>';
+        var_dump($message);
+        $message->send();
+        echo '</code></pre>';
+    });
+
+    $r->addRoute('POST', '/sms/{uuid}', function (array $uuid) {
+        //var_dump(preg_match("/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i", $guid) ? "ok" : "not ok");
     });
 });
 
