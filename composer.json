@@ -13,5 +13,8 @@
             "name": "Ben Harold",
             "email": "benharold@mac.com"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {"benharold\\webhook\\": "src/app"}
+    }
 }
