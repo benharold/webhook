@@ -2,12 +2,11 @@
 
 use benharold\webhook\client\ClientFactory;
 use benharold\webhook\sms\MessageFactory;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r
 ) {
-    $r->addRoute('GET', '/', function () {
-        echo 123;
-    });
     $r->addRoute('GET', '/test', function () {
         $sid = getenv('TWILIO_SID');
         $token = getenv('TWILIO_TOKEN');
@@ -15,10 +14,14 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r
         $to = getenv('TO_NUMBER');
         $client = ClientFactory::create($sid, $token);
         $message = MessageFactory::create($client, $to, $from, '');
-        echo '<code><pre>';
-        var_dump($message);
         $message->send();
-        echo '</code></pre>';
+    });
+
+    $r->addRoute('POST', '/test', function () {
+        $log = new Logger('webhook');
+        $log->pushHandler(new StreamHandler(getenv('LOG_FILE_PATH'), Logger::NOTICE));
+        $log->notice('Data posted to `/test`:', $_POST);
+        echo 'done';
     });
 
     $r->addRoute('POST', '/sms/{uuid}', function (array $uuid) {
