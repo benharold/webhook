@@ -5,13 +5,12 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
-    $r->addRoute('POST', '/test', function () {
+    $r->addRoute('POST', '/new-relic-alert', function () {
         $log = new Logger('webhook');
-        $log->pushHandler(new StreamHandler(getenv('LOG_FILE_PATH'), Logger::NOTICE));
-        $log->notice('Data posted to `/test`:', $_POST);
+        $log->pushHandler(new StreamHandler(getenv('LOG_FILE_PATH'), Logger::WARNING));
+        $log->debug('Data posted to `/test`:', $_POST);
 
-        $data = json_decode($_POST);
-        $c = new NewRelicMessageController($data);
+        $c = new NewRelicMessageController($_POST);
         $c->run();
     });
 

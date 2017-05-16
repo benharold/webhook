@@ -18,8 +18,8 @@ class NewRelicMessageController extends MessageController
         $from = getenv('FROM_NUMBER');
 
         if ($alert = $this->data['alert']) {
-            $message = sprintf('%s: %s', $alert['long_description'],
-                $alert['alert_url']);
+            $alert   = json_decode($alert);
+            $message = sprintf('%s: %s', $alert->long_description, $alert->alert_url);
             $message = MessageFactory::create($this->client, $to, $from, $message);
             $message->send();
         }
